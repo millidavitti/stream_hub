@@ -1,9 +1,9 @@
 import "server-only";
 import mongoose from "mongoose";
 
-export async function connectdb() {
+export async function connectdb(event: string) {
 	try {
-		console.log("init", mongoose.connection.readyState);
+		console.log("DB Connection Event: ", event);
 
 		mongoose.connection.readyState ||
 			(await mongoose.connect(process.env.MONGO_URI as string));
@@ -18,6 +18,6 @@ export async function connectdb() {
   
   Try again!
   `);
-		setTimeout(() => connectdb(), 5000);
+		setTimeout(() => connectdb(event), 5000);
 	}
 }
