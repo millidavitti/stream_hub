@@ -2,15 +2,13 @@ import "server-only";
 import mongoose from "mongoose";
 
 export async function connectdb() {
-	const data = mongoose.connection.on("connected", () =>
-		console.log("Connected Already"),
-	);
-
-	if (data.readyState === 1) return;
-	console.log("Connection Start...", mongoose.connection.readyState);
 	try {
-		const data = await mongoose.connect(process.env.MONGO_URI as string);
-		console.log("Connection successful!", data.connection.readyState);
+		console.log("init", mongoose.connection.readyState);
+
+		mongoose.connection.readyState ||
+			(await mongoose.connect(process.env.MONGO_URI as string));
+
+		console.log("Connection successful!", mongoose.connection.readyState);
 	} catch (error) {
 		console.log(`Connection error!
   1. Check your internet connection.
@@ -20,5 +18,6 @@ export async function connectdb() {
   
   Try again!
   `);
+		setTimeout(() => connectdb(), 5000);
 	}
 }
