@@ -51,7 +51,6 @@ export async function POST(req: Request) {
 	}
 
 	// Get the ID and type
-	const { id } = evt.data;
 	const eventType = evt.type;
 
 	// User Date Sync with Database
@@ -60,9 +59,9 @@ export async function POST(req: Request) {
 			{
 				await connectdb("Create User");
 				const user = new UserSchema({
-					authId: id,
-					userName: payload.data.username,
-					imageUrl: payload.data.image_url,
+					authId: evt.data.id,
+					userName: evt.data.username,
+					imageUrl: evt.data.image_url,
 				});
 
 				const validate = user.validateSync();
@@ -78,15 +77,15 @@ export async function POST(req: Request) {
 			{
 				await connectdb("Update User");
 				const update = {
-					authId: id,
-					userName: payload.data.username,
-					imageUrl: payload.data.image_url,
+					authId: evt.data.id,
+					userName: evt.data.username,
+					imageUrl: evt.data.image_url,
 					updatedAt: Date.now(),
 				};
 
 				const user: any = await UserSchema.validate(update);
 
-				await UserSchema.updateOne({ authId: id }, user, {
+				await UserSchema.updateOne({ authId: evt.data.id }, user, {
 					upsert: true,
 				});
 
@@ -96,7 +95,7 @@ export async function POST(req: Request) {
 		case "user.deleted":
 			{
 				await connectdb("Delete User");
-				await UserSchema.deleteOne({ authId: id });
+				await UserSchema.deleteOne({ authId: evt.data.id });
 
 				console.log("User data deleted!");
 			}
