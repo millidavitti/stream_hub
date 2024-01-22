@@ -12,7 +12,6 @@ export default function Container({ children }: ContainerProps) {
 
 	useLayoutEffect(() => {
 		if (matches) sidebarDispatch({ type: "on_collapse" });
-		else sidebarDispatch({ type: "on_expand" });
 	}, [matches]);
 
 	return (
