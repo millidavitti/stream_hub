@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ui/theme-provider";
+import SidebarProvider from "@/state/functions/sidebar.state";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -30,7 +31,7 @@ export default function RootLayout({
 						forcedTheme='dark'
 						storageKey='stream-hub-theme'
 					>
-						{children}
+						<SidebarProvider>{children}</SidebarProvider>
 					</ThemeProvider>
 				</body>
 			</html>
