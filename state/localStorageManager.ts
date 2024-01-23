@@ -3,7 +3,9 @@ export class LocalStorageManager<T> {
 
 	initState(state: T) {
 		if (this.getState()) return this.getState();
-		localStorage.setItem(this.key, JSON.stringify(state));
+
+		if (typeof window !== "undefined")
+			localStorage.setItem(this.key, JSON.stringify(state));
 	}
 
 	setState(state: T) {
@@ -12,6 +14,8 @@ export class LocalStorageManager<T> {
 	}
 
 	getState(): T {
-		return JSON.parse(localStorage.getItem(this.key) as string);
+		if (typeof window !== "undefined")
+			return JSON.parse(localStorage.getItem(this.key) as string);
+		return {} as any;
 	}
 }
