@@ -1,12 +1,11 @@
-import { currentUser } from "@clerk/nextjs/server";
 import { connectdb } from "../connect";
 import userModel from "../models/user.model";
 import { Document } from "mongoose";
+import { getAuthenticatedUser } from "../helpers/getAuthenticatedUser";
 
 export async function getCurrentUser() {
-	const authUser = await currentUser();
-
-	if (!authUser) throw new Error("Unauthenticated!");
+	const authUser = await getAuthenticatedUser();
+	if (!authUser) throw new Error("User Unauthenticated!");
 
 	await connectdb("Get Current User");
 
