@@ -1,18 +1,24 @@
-import { currentUser } from "@clerk/nextjs/server";
 import { connectdb } from "../connect";
 import userModel from "../models/user.model";
 import { Document } from "mongoose";
+import { getAuthenticatedUser } from "../helpers/getAuthenticatedUser";
+import { Error } from "mongoose";
 
 export async function getCurrentUser() {
-	const authUser = await currentUser();
-
-	if (!authUser) throw new Error("Unauthenticated!");
+	const authUser = await getAuthenticatedUser();
+	if (!authUser) throw new Error("User Unauthenticated!");
 
 	await connectdb("Get Current User");
 
-	const user: Document = await userModel
-		.findOne({ authId: authUser.id })
-		.orFail(new Error("User not found!"));
+	try {
+		const user: Document = await userModel
+			.findOne({ authId: authUser.id })
+			.orFail(new Error("User not found!"));
 
-	return user.toObject();
+		return user.toObject();
+	} catch (value) {
+		const error = value as Error.DocumentNotFoundError;
+		console.log(error.message);
+		return {};
+	}
 }

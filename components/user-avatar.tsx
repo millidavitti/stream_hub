@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 import { Skeleton } from "./ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import LiveBage from "./live-badge";
+import LiveBage from "./live-bage";
 
 interface UserAvatarProps extends VariantProps<typeof avatarSizes> {
 	userName: string;
