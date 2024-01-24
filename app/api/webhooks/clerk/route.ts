@@ -1,7 +1,7 @@
 import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
-import UserSchema from "@/db/models/user.schema";
+import userModel from "@/db/models/user.model";
 import { connectdb } from "@/db/connect";
 
 export async function POST(req: Request) {
@@ -58,7 +58,7 @@ export async function POST(req: Request) {
 		case "user.created":
 			{
 				await connectdb("Create User");
-				const user = new UserSchema({
+				const user = new userModel({
 					authId: evt.data.id,
 					userName: evt.data.username,
 					imageUrl: evt.data.image_url,
@@ -68,7 +68,7 @@ export async function POST(req: Request) {
 
 				if (validate?.errors) throw new Error(validate.errors);
 
-				await UserSchema.create(user);
+				await userModel.create(user);
 
 				console.log("New user created!");
 			}
@@ -83,9 +83,9 @@ export async function POST(req: Request) {
 					updatedAt: Date.now(),
 				};
 
-				const user: any = await UserSchema.validate(update);
+				const user: any = await userModel.validate(update);
 
-				await UserSchema.updateOne({ authId: evt.data.id }, user, {
+				await userModel.updateOne({ authId: evt.data.id }, user, {
 					upsert: true,
 				});
 
@@ -95,7 +95,7 @@ export async function POST(req: Request) {
 		case "user.deleted":
 			{
 				await connectdb("Delete User");
-				await UserSchema.deleteOne({ authId: evt.data.id });
+				await userModel.deleteOne({ authId: evt.data.id });
 
 				console.log("User data deleted!");
 			}

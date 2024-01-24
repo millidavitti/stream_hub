@@ -4,7 +4,12 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ui/theme-provider";
-import SidebarProvider from "@/state/functions/sidebar.state";
+import dynamic from "next/dynamic";
+
+const SidebarProvider = dynamic(
+	() => import("@/state/functions/sidebar.state"),
+	{ ssr: false },
+);
 
 const inter = Inter({ subsets: ["latin"] });
 
