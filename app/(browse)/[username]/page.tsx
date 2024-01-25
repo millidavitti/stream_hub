@@ -2,12 +2,11 @@
 import { Button } from "@/components/ui/button";
 import { followAction } from "@/db/actions/follow.action";
 import { usePathname } from "next/navigation";
-import React from "react";
 
 interface UserPageProps {
 	userName: string;
 }
-export default function UserPage({}: UserPageProps) {
+export default function UserPage() {
 	const segment = usePathname();
 
 	return (
