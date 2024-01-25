@@ -30,16 +30,25 @@ const schema = new Schema(
 			type: String,
 			default: "I am a Stream Hub User!",
 		},
-		createdAt: {
-			type: Date,
-			default: Date.now,
-		},
-		updatedAt: {
-			type: Date,
-			default: Date.now,
-		},
 	},
-	{ strict: "throw" },
+	{
+		timestamps: true,
+		strict: "throw",
+		toJSON: { virtuals: true },
+		toObject: { virtuals: true },
+	},
 );
+
+schema.virtual("followers", {
+	ref: "Follower",
+	localField: "userName",
+	foreignField: "userName",
+});
+
+schema.virtual("follows", {
+	ref: "Follow",
+	localField: "userName",
+	foreignField: "userName",
+});
 
 export default models.User || model("User", schema);
