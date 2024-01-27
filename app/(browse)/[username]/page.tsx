@@ -4,7 +4,6 @@ import FollowButton from "./_components/follow-btn";
 import UnfollowButton from "./_components/unfollow-btn";
 
 interface UserPageProps {
-	userName: string;
 	params: any;
 }
 
