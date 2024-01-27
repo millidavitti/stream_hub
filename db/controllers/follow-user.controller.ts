@@ -4,6 +4,7 @@ import { getAuthenticatedUser } from "../helpers/getAuthenticatedUser";
 import userModel from "../models/user.model";
 import followModel, { Follow } from "../models/follow.model";
 import followerModel, { Follower } from "../models/follower.model";
+import { revalidatePath } from "next/cache";
 
 export async function follow(userName: string) {
 	const authenticatedUser = await getAuthenticatedUser();
@@ -51,10 +52,14 @@ export async function follow(userName: string) {
 			console.log("Follwer: ", user);
 			console.log("Follwed: ", followedUser);
 		});
-	} catch (error) {
-		session.endSession();
+		await session.endSession();
+		revalidatePath("/" + userName, "page");
+		return true;
+	} catch {
+		await session.endSession();
 		console.log("\nTransaction: User Relationship Update Falied!");
 		console.log("Follwer: ", user);
 		console.log("Follwed: ", followedUser);
 	}
+	return false;
 }

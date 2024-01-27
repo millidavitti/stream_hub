@@ -1,10 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { SignInButton, UserButton, currentUser } from "@clerk/nextjs";
+import { getAuthenticatedUser } from "@/db/helpers/getAuthenticatedUser";
+import { SignInButton, UserButton } from "@clerk/nextjs";
 import { Clapperboard } from "lucide-react";
 import Link from "next/link";
 
 export async function Actions() {
-	const user = await currentUser();
+	const user = await getAuthenticatedUser();
 
 	return (
 		<div className='flex items-center justify-end gap-x-2 ml-4 lg:ml-0'>
