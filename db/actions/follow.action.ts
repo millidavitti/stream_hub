@@ -1,7 +1,6 @@
 "use server";
+import { follow } from "@/db/controllers/follow-user.controller";
 
-import { follow } from "../controllers/follow-user.controller";
-
-export async function followAction(userName: string) {
-	await follow(userName);
+export async function followAction(args: any) {
+	return await follow(args.username);
 }

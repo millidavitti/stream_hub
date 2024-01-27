@@ -5,6 +5,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import dynamic from "next/dynamic";
+import { Toaster } from "sonner";
 
 const SidebarProvider = dynamic(
 	() => import("@/state/functions/sidebar.state"),
@@ -36,7 +37,10 @@ export default function RootLayout({
 						forcedTheme='dark'
 						storageKey='stream-hub-theme'
 					>
-						<SidebarProvider>{children}</SidebarProvider>
+						<SidebarProvider>
+							<Toaster theme='light' position='bottom-center' />
+							{children}
+						</SidebarProvider>
 					</ThemeProvider>
 				</body>
 			</html>

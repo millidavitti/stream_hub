@@ -1,17 +1,25 @@
-"use client";
-import { Button } from "@/components/ui/button";
-import { followAction } from "@/db/actions/follow.action";
-import { usePathname } from "next/navigation";
+import { isFollowing } from "@/db/helpers/isFollowing";
+
+import FollowButton from "./_components/follow-btn";
+import UnfollowButton from "./_components/unfollow-btn";
 
 interface UserPageProps {
 	userName: string;
+	params: any;
 }
-export default function UserPage() {
-	const segment = usePathname();
+
+export default async function UserPage({ params }: UserPageProps) {
+	const status = await isFollowing(params.username);
+	console.log("Is current user following " + params.username + ":", !!status);
 
 	return (
 		<div>
-			<Button onClick={() => followAction(segment.slice(1))}>Follow</Button>
+			<FollowButton isFollowing={!!status} username={params.username}>
+				Follow
+			</FollowButton>
+			<UnfollowButton isFollowing={!!!status} username={params.username}>
+				Unfollow
+			</UnfollowButton>
 		</div>
 	);
 }
