@@ -1,10 +1,11 @@
 import { Schema, models, model } from "mongoose";
+import { User } from "./user.model";
 const { ObjectId } = Schema.Types;
 
 export interface Follow {
-	user: string | object;
+	user: string | User;
 	userName: string;
-	follow: string | object;
+	follow: string | User;
 	followUsername: string;
 }
 
