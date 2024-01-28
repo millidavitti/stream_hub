@@ -11,18 +11,18 @@ export async function follow(userName: string) {
 
 	await connectdb("Follow " + userName);
 
-	// Get following user doc
-	const user = await userModel
-		.findOne({ authId: authenticatedUser?.id }, { _id: 1, userName: 1 })
-		.orFail();
-
-	const followedUser = await userModel
-		.findOne({ userName }, { _id: 1, userName: 1 })
-		.orFail();
-
 	const session = await startSession();
 
 	try {
+		// Get following user doc
+		const user = await userModel
+			.findOne({ authId: authenticatedUser?.id }, { _id: 1, userName: 1 })
+			.orFail();
+
+		const followedUser = await userModel
+			.findOne({ userName }, { _id: 1, userName: 1 })
+			.orFail();
+
 		await session.withTransaction(async () => {
 			// Create Follow Doc (Registers a follow for the follower)
 			const guard = await followModel.findOne({
@@ -55,11 +55,10 @@ export async function follow(userName: string) {
 		await session.endSession();
 		revalidatePath("/" + userName, "page");
 		return true;
-	} catch {
+	} catch (error) {
 		await session.endSession();
 		console.log("\nTransaction: User Relationship Update Falied!");
-		console.log("Follwer: ", user);
-		console.log("Follwed: ", followedUser);
+		console.log(error);
 	}
 	return false;
 }

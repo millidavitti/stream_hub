@@ -1,10 +1,11 @@
+import { User } from "@clerk/nextjs/server";
 import { Schema, models, model } from "mongoose";
 const { ObjectId } = Schema.Types;
 
 export interface Follower {
-	user: string | object;
+	user: string | User;
 	userName: string;
-	follower: string | object;
+	follower: string | User;
 	followerUsername: string;
 }
 
