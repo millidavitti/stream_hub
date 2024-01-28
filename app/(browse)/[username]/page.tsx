@@ -13,12 +13,15 @@ export default async function UserPage({ params }: UserPageProps) {
 
 	return (
 		<div>
-			<FollowButton isFollowing={!!status} username={params.username}>
-				Follow
-			</FollowButton>
-			<UnfollowButton isFollowing={!!!status} username={params.username}>
-				Unfollow
-			</UnfollowButton>
+			{status ? (
+				<UnfollowButton isFollowing={!!!status} username={params.username}>
+					Unfollow
+				</UnfollowButton>
+			) : (
+				<FollowButton isFollowing={!!status} username={params.username}>
+					Follow
+				</FollowButton>
+			)}
 		</div>
 	);
 }

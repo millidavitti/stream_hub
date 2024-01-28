@@ -11,23 +11,25 @@ export default async function unfollow(userName: string) {
 
 	await connectdb("Unfollow " + userName);
 
-	const user = await userModel
-		.findOne({ authId: authenticatedUser?.id })
-		.orFail();
-
-	const followedUser = await userModel.findOne({ userName }).orFail();
-
 	const session = await startSession();
 
 	try {
 		await session.withTransaction(async () => {
-			// Delete follows doc (the follower's relationship doc)
+			const user = await userModel
+				.findOne({ authId: authenticatedUser?.id })
+				.orFail();
 
-			await followModel.deleteOne({ user: user.id }).session(session).orFail();
+			const followedUser = await userModel.findOne({ userName }).orFail();
+
+			// Delete follows doc (the follower's relationship doc)
+			await followModel
+				.deleteOne({ user: user.id, follow: followedUser.id })
+				.session(session)
+				.orFail();
 
 			// Delete followers doc (the followed relationship doc)
 			await followerModel
-				.deleteOne({ user: followedUser.id })
+				.deleteOne({ user: followedUser.id, follower: user.id })
 				.session(session)
 				.orFail();
 		});
@@ -37,8 +39,7 @@ export default async function unfollow(userName: string) {
 	} catch (error) {
 		await session.endSession();
 		console.log("\nTransaction: User Relationship Deletion Falied!");
-		console.log("Follwer: ", user);
-		console.log("Follwed: ", followedUser);
+		console.log(error);
 	}
 	return false;
 }
