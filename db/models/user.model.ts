@@ -51,4 +51,10 @@ schema.virtual("follows", {
 	foreignField: "userName",
 });
 
+schema.virtual("blocks", {
+	ref: "Block",
+	localField: "_id",
+	foreignField: "blocker",
+});
+
 export default models.User || model("User", schema);

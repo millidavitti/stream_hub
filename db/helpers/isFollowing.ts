@@ -1,4 +1,3 @@
-"use server";
 import followModel from "../models/follow.model";
 import { getAuthenticatedUser } from "./getAuthenticatedUser";
 
