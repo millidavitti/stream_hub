@@ -2,18 +2,17 @@ import { connectdb } from "../connect";
 import blockModel from "../models/block.model";
 import { getAuthenticatedUser } from "./getAuthenticatedUser";
 
-export async function isBlocked(userName: string) {
+export async function isBlocked(blockedUsername: string) {
 	const authenticatedUser = await getAuthenticatedUser();
 
-	await connectdb("Is " + userName + " blocked");
+	await connectdb("Is " + blockedUsername + " blocked");
 	try {
 		if (authenticatedUser) {
-			const data = await blockModel
-				.findOne({
-					blockerUsername: authenticatedUser?.username,
-					blockedUsername: userName,
-				})
-				.orFail();
+			const data = await blockModel.findOne({
+				blockerUsername: authenticatedUser.username,
+				blockedUsername: blockedUsername,
+			});
+
 			if (data) return true;
 		}
 	} catch (error) {
