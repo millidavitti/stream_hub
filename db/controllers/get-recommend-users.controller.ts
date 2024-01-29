@@ -3,6 +3,7 @@ import { connectdb } from "../connect";
 import userModel from "../models/user.model";
 import { getAuthenticatedUser } from "../helpers/getAuthenticatedUser";
 import { Follow } from "../models/follow.model";
+import { Block } from "../models/block.model";
 
 export async function getRecommendedUsers() {
 	const authenticatedUser = await getAuthenticatedUser();
@@ -15,18 +16,24 @@ export async function getRecommendedUsers() {
 				.findOne({ authId: authenticatedUser.id })
 				.populate({
 					path: "follows",
+				})
+				.populate({
+					path: "blocks",
 				});
 
+			console.log("Line 24: ", user);
 			// Get the usernames of all the users that the authenticated user is following
-			const followedUsernames = user.follows.map(
-				(follow: Follow) => follow.followUsername,
-			);
+			const exclusion = await Promise.all([
+				...user.follows.map((follow: Follow) => follow.followUsername),
+				...user.blocks.map((block: Block) => block.blockedUsername),
+			]);
+
 			const users = await userModel
 				.find()
 				.where("authId")
 				.ne(authenticatedUser.id)
 				.where("userName")
-				.nin(followedUsernames)
+				.nin(exclusion)
 				.sort("desc")
 				.orFail();
 
