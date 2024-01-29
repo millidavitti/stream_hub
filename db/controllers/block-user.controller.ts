@@ -21,9 +21,10 @@ export async function block(blockedUsername: string) {
 			.orFail();
 
 		// Check if a block document already exists between the blocker and the blocked user
-		const blockDoc = await blockModel
-			.findOne({ blocker: blocker.id, blocked: blocked.id })
-			.orFail();
+		const blockDoc = await blockModel.findOne({
+			blocker: blocker.id,
+			blocked: blocked.id,
+		});
 
 		// If a block document already exists, throw an error
 		if (blockDoc) throw new Error("User has been blocked!");
@@ -33,10 +34,10 @@ export async function block(blockedUsername: string) {
 			blocker: blocker.id,
 			blockerUsername: blocker.userName,
 			blocked: blocked.id,
-			blockedUsername: blocker.userName,
+			blockedUsername: blocked.userName,
 		} as Block);
 
-		revalidatePath("", "page");
+		revalidatePath("/" + blockedUsername, "page");
 
 		console.log(blocked.userName + " is blocked!");
 
