@@ -1,7 +1,14 @@
 import { Schema, model, models } from "mongoose";
+import { User } from "./user.model";
 
 const { ObjectId } = Schema.Types;
 
+export interface Block {
+	blocker: string | User;
+	blockerUsername: string;
+	blocked: string | User;
+	blockedUsername: string;
+}
 const schema = new Schema(
 	{
 		blocker: {
