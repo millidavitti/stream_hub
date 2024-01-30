@@ -1,8 +1,9 @@
+import "../models/follow.model";
+import "../models/block.model";
 import { Document } from "mongoose";
 import { connectdb } from "../connect";
 import { getAuthenticatedUser } from "../helpers/getAuthenticatedUser";
 import userModel from "../models/user.model";
-import "../models/follow.model";
 import { Block } from "../models/block.model";
 import { revalidatePath } from "next/cache";
 
@@ -21,7 +22,6 @@ export default async function getFollows() {
 			const blockedUsernames = user.blocks.map(
 				(block: Block) => block.blockedUsername,
 			);
-			console.log(blockedUsernames);
 
 			const follows = (await userModel
 				.findOne(
@@ -39,9 +39,10 @@ export default async function getFollows() {
 					},
 				})) as Document;
 
-			revalidatePath("/", blockedUsernames);
-			console.log("Line 41: ", follows);
-			return follows?.toObject();
+			revalidatePath("/");
+
+			console.log("Line 43: ", follows);
+			return follows.toObject();
 		} else console.log("User not signed in!");
 	} catch (error) {
 		console.log(error);
