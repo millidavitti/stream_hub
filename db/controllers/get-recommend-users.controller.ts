@@ -35,7 +35,7 @@ export async function getRecommendedUsers() {
 				.nin(exclusion)
 				.sort("desc")
 				.orFail();
-			console.log(users);
+
 			const usersPlainObjects = users.map((user: Document) => user.toObject());
 
 			return usersPlainObjects;
