@@ -33,7 +33,7 @@ export default async function unfollow(userName: string) {
 				.session(session)
 				.orFail();
 		});
-		session.endSession();
+		await session.endSession();
 		revalidatePath("/" + userName, "page");
 		return true;
 	} catch (error) {

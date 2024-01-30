@@ -18,6 +18,6 @@ export async function connectdb(event: string) {
   
   Try again!
   `);
-		setTimeout(() => connectdb(event), 5000);
+		setTimeout(async () => await connectdb(event), 5000);
 	}
 }

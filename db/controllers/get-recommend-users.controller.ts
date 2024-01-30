@@ -21,7 +21,6 @@ export async function getRecommendedUsers() {
 					path: "blocks",
 				});
 
-			console.log("Line 24: ", user);
 			// Get the usernames of all the users that the authenticated user is following
 			const exclusion = await Promise.all([
 				...user.follows.map((follow: Follow) => follow.followUsername),
