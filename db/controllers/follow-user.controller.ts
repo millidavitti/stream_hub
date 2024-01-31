@@ -1,13 +1,13 @@
 import { startSession } from "mongoose";
 import { connectdb } from "../connect";
-import { getAuthenticatedUser } from "../helpers/getAuthenticatedUser";
 import userModel from "../models/user.model";
 import followModel, { Follow } from "../models/follow.model";
 import followerModel, { Follower } from "../models/follower.model";
 import { revalidatePath } from "next/cache";
+import { auth } from "@clerk/nextjs";
 
 export async function follow(userName: string) {
-	const authenticatedUser = await getAuthenticatedUser();
+	const authenticatedUser = auth();
 
 	await connectdb("Follow " + userName);
 
@@ -16,7 +16,7 @@ export async function follow(userName: string) {
 	try {
 		// Get following user doc
 		const user = await userModel
-			.findOne({ authId: authenticatedUser?.id }, { _id: 1, userName: 1 })
+			.findOne({ authId: authenticatedUser.userId }, { _id: 1, userName: 1 })
 			.orFail();
 
 		const followedUser = await userModel

@@ -1,17 +1,17 @@
 import { revalidatePath } from "next/cache";
 import { connectdb } from "../connect";
-import { getAuthenticatedUser } from "../helpers/getAuthenticatedUser";
 import blockModel from "../models/block.model";
 import userModel from "../models/user.model";
+import { auth } from "@clerk/nextjs";
 
 export async function unblock(blockedUsername: string) {
-	const authenticatedUser = await getAuthenticatedUser();
+	const authenticatedUser = auth();
 
 	await connectdb("Unblock user: " + blockedUsername);
 
 	try {
 		const blocker = await userModel
-			.findOne({ authId: authenticatedUser?.id })
+			.findOne({ authId: authenticatedUser.userId })
 			.orFail();
 
 		const blocked = await userModel
@@ -23,6 +23,7 @@ export async function unblock(blockedUsername: string) {
 			.orFail();
 
 		revalidatePath("/" + blockedUsername, "page");
+
 		console.log(blockedUsername + " is unblocked!");
 
 		return true;

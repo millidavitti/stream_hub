@@ -1,13 +1,13 @@
 import { startSession } from "mongoose";
 import { connectdb } from "../connect";
-import { getAuthenticatedUser } from "../helpers/getAuthenticatedUser";
 import followModel from "../models/follow.model";
 import followerModel from "../models/follower.model";
 import userModel from "../models/user.model";
 import { revalidatePath } from "next/cache";
+import { auth } from "@clerk/nextjs";
 
 export default async function unfollow(userName: string) {
-	const authenticatedUser = await getAuthenticatedUser();
+	const authenticatedUser = auth();
 
 	await connectdb("Unfollow " + userName);
 
@@ -16,7 +16,7 @@ export default async function unfollow(userName: string) {
 	try {
 		await session.withTransaction(async () => {
 			const user = await userModel
-				.findOne({ authId: authenticatedUser?.id })
+				.findOne({ authId: authenticatedUser.userId })
 				.orFail();
 
 			const followedUser = await userModel.findOne({ userName }).orFail();
@@ -34,7 +34,9 @@ export default async function unfollow(userName: string) {
 				.orFail();
 		});
 		await session.endSession();
+
 		revalidatePath("/" + userName, "page");
+
 		return true;
 	} catch (error) {
 		await session.endSession();

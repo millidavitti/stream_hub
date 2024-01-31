@@ -1,19 +1,20 @@
 import { Document, Error } from "mongoose";
 import { connectdb } from "../connect";
 import userModel from "../models/user.model";
-import { getAuthenticatedUser } from "../helpers/getAuthenticatedUser";
 import { Follow } from "../models/follow.model";
 import { Block } from "../models/block.model";
+import { auth } from "@clerk/nextjs";
 
 export async function getRecommendedUsers() {
-	const authenticatedUser = await getAuthenticatedUser();
-
+	// const authenticatedUser = await getAuthenticatedUser();
+	const isAuthenticated = auth();
+	console.log("From getRecommendedUsers: ", isAuthenticated);
 	await connectdb("Get Recommended Users");
 
 	try {
-		if (authenticatedUser) {
+		if (isAuthenticated.userId) {
 			const user = await userModel
-				.findOne({ authId: authenticatedUser.id })
+				.findOne({ authId: isAuthenticated.userId })
 				.populate({
 					path: "follows",
 				})
@@ -30,7 +31,7 @@ export async function getRecommendedUsers() {
 			const users = await userModel
 				.find()
 				.where("authId")
-				.ne(authenticatedUser.id)
+				.ne(isAuthenticated.userId)
 				.where("userName")
 				.nin(exclusion)
 				.sort("desc")

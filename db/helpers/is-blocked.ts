@@ -1,20 +1,18 @@
+import { currentUser } from "@clerk/nextjs";
 import { connectdb } from "../connect";
 import blockModel from "../models/block.model";
-import { getAuthenticatedUser } from "./getAuthenticatedUser";
 
 export async function isBlocked(blockedUsername: string) {
-	const authenticatedUser = await getAuthenticatedUser();
-
 	await connectdb("Is " + blockedUsername + " blocked");
 	try {
-		if (authenticatedUser) {
-			const data = await blockModel.findOne({
-				blockerUsername: authenticatedUser.username,
-				blockedUsername: blockedUsername,
-			});
+		const user = await currentUser();
 
-			if (data) return true;
-		}
+		const data = await blockModel.findOne({
+			blockerUsername: user?.username,
+			blockedUsername: blockedUsername,
+		});
+
+		if (data) return true;
 	} catch (error) {
 		console.log(error);
 	}
