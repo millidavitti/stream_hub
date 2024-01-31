@@ -4,6 +4,9 @@ import { WebhookEvent } from "@clerk/nextjs/server";
 import userModel from "@/db/models/user.model";
 import { connectdb } from "@/db/connect";
 import streamModel, { Stream } from "@/db/models/stream.model";
+import { startSession } from "mongoose";
+import followModel from "@/db/models/follow.model";
+import followerModel from "@/db/models/follower.model";
 
 export async function POST(req: Request) {
 	// You can find this in the Clerk Dashboard -> Webhooks -> choose the webhook
@@ -105,8 +108,18 @@ export async function POST(req: Request) {
 		case "user.deleted":
 			{
 				await connectdb("Delete User");
+				const session = await startSession();
 				try {
-					await userModel.deleteOne({ authId: evt.data.id });
+					session.withTransaction(async () => {
+						const user = await userModel.findOneAndDelete({
+							authId: evt.data.id,
+						});
+
+						await followModel.deleteMany({ user: user.id });
+						await followerModel.deleteMany({ follower: user.id });
+
+						await streamModel.deleteOne({ host: user.id });
+					});
 
 					console.log("User data deleted!");
 				} catch (error) {
