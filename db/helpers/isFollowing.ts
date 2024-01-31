@@ -1,5 +1,5 @@
 import followModel from "../models/follow.model";
-import { getAuthenticatedUser } from "./getAuthenticatedUser";
+import { getAuthenticatedUser } from "./get-authenticated-user";
 
 export async function isFollowing(followUsername: string) {
 	const authenticatedUser = await getAuthenticatedUser();

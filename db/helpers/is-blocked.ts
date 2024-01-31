@@ -1,6 +1,6 @@
 import { connectdb } from "../connect";
 import blockModel from "../models/block.model";
-import { getAuthenticatedUser } from "./getAuthenticatedUser";
+import { getAuthenticatedUser } from "./get-authenticated-user";
 
 export async function isBlocked(blockedUsername: string) {
 	const authenticatedUser = await getAuthenticatedUser();
