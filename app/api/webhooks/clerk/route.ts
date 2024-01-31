@@ -3,6 +3,10 @@ import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import userModel from "@/db/models/user.model";
 import { connectdb } from "@/db/connect";
+import streamModel, { Stream } from "@/db/models/stream.model";
+import { startSession } from "mongoose";
+import followModel from "@/db/models/follow.model";
+import followerModel from "@/db/models/follower.model";
 
 export async function POST(req: Request) {
 	// You can find this in the Clerk Dashboard -> Webhooks -> choose the webhook
@@ -57,47 +61,70 @@ export async function POST(req: Request) {
 	switch (eventType) {
 		case "user.created":
 			{
-				await connectdb("Create User");
-				const user = new userModel({
-					authId: evt.data.id,
-					userName: evt.data.username,
-					imageUrl: evt.data.image_url,
-				});
+				try {
+					await connectdb("Create User");
+					const user = new userModel({
+						authId: evt.data.id,
+						userName: evt.data.username,
+						imageUrl: evt.data.image_url,
+					});
 
-				const validate = user.validateSync();
+					await userModel.create(user);
 
-				if (validate?.errors) throw new Error(validate.errors);
+					await streamModel.create({
+						host: user.id,
+						name: user.userName,
+					} as Stream);
 
-				await userModel.create(user);
-
-				console.log("New user created!");
+					console.log("New user created!");
+				} catch (error) {
+					console.log(error);
+				}
 			}
 			break;
 		case "user.updated":
 			{
 				await connectdb("Update User");
-				const update = {
-					authId: evt.data.id,
-					userName: evt.data.username,
-					imageUrl: evt.data.image_url,
-					updatedAt: Date.now(),
-				};
+				try {
+					const update = {
+						authId: evt.data.id,
+						userName: evt.data.username,
+						imageUrl: evt.data.image_url,
+						updatedAt: Date.now(),
+					};
 
-				const user: any = await userModel.validate(update);
+					const user: any = await userModel.validate(update);
 
-				await userModel.updateOne({ authId: evt.data.id }, user, {
-					upsert: true,
-				});
+					await userModel.updateOne({ authId: evt.data.id }, user, {
+						upsert: true,
+					});
 
-				console.log("User data updated!");
+					console.log("User data updated!");
+				} catch (error) {
+					console.log(error);
+				}
 			}
 			break;
 		case "user.deleted":
 			{
 				await connectdb("Delete User");
-				await userModel.deleteOne({ authId: evt.data.id });
+				const session = await startSession();
+				try {
+					session.withTransaction(async () => {
+						const user = await userModel.findOneAndDelete({
+							authId: evt.data.id,
+						});
 
-				console.log("User data deleted!");
+						await followModel.deleteMany({ user: user.id });
+						await followerModel.deleteMany({ follower: user.id });
+
+						await streamModel.deleteOne({ host: user.id });
+					});
+
+					console.log("User data deleted!");
+				} catch (error) {
+					console.log(error);
+				}
 			}
 			break;
 	}

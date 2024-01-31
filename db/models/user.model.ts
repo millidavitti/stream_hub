@@ -57,4 +57,11 @@ schema.virtual("blocks", {
 	foreignField: "blocker",
 });
 
+schema.virtual("stream", {
+	ref: "Stream",
+	localField: "_id",
+	foreignField: "host",
+	justOne: true,
+});
+
 export default models.User || model("User", schema);
