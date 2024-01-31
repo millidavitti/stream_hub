@@ -1,6 +1,6 @@
 import { startSession } from "mongoose";
 import { connectdb } from "../connect";
-import { getAuthenticatedUser } from "../helpers/getAuthenticatedUser";
+import { getAuthenticatedUser } from "../helpers/get-authenticated-user";
 import userModel from "../models/user.model";
 import followModel, { Follow } from "../models/follow.model";
 import followerModel, { Follower } from "../models/follower.model";

@@ -1,7 +1,7 @@
 import { Document, Error } from "mongoose";
 import { connectdb } from "../connect";
 import userModel from "../models/user.model";
-import { getAuthenticatedUser } from "../helpers/getAuthenticatedUser";
+import { getAuthenticatedUser } from "../helpers/get-authenticated-user";
 import { Follow } from "../models/follow.model";
 import { Block } from "../models/block.model";
 

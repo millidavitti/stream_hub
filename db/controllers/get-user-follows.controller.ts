@@ -2,7 +2,7 @@ import "../models/follow.model";
 import "../models/block.model";
 import { Document } from "mongoose";
 import { connectdb } from "../connect";
-import { getAuthenticatedUser } from "../helpers/getAuthenticatedUser";
+import { getAuthenticatedUser } from "../helpers/get-authenticated-user";
 import userModel from "../models/user.model";
 import { Block } from "../models/block.model";
 import { revalidatePath } from "next/cache";
@@ -41,9 +41,8 @@ export default async function getFollows() {
 
 			revalidatePath("/");
 
-			console.log("Line 43: ", follows);
 			return follows.toObject();
-		} else console.log("User not signed in!");
+		} else throw new Error("User not signed in!");
 	} catch (error) {
 		console.log(error);
 	}

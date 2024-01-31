@@ -1,6 +1,6 @@
 import { revalidatePath } from "next/cache";
 import { connectdb } from "../connect";
-import { getAuthenticatedUser } from "../helpers/getAuthenticatedUser";
+import { getAuthenticatedUser } from "../helpers/get-authenticated-user";
 import blockModel from "../models/block.model";
 import userModel from "../models/user.model";
 
