@@ -9,11 +9,11 @@ interface HostLayout {
 	children: ReactNode;
 	params: { username: string };
 }
-export default async function HostLayout({ children }: HostLayout) {
-	const host = await getCurrentUser();
+export default async function HostLayout({ children, params }: HostLayout) {
+	const host = await getCurrentUser(params.username);
 
 	if (!host) redirect("/");
-	console.log(host);
+
 	return (
 		<>
 			<NavBar />
