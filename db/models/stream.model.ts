@@ -2,15 +2,15 @@ import { Schema, model, models } from "mongoose";
 const { ObjectId } = Schema.Types;
 
 export interface Stream {
-	host: object;
-	name: object;
-	thumbnail?: object;
-	ingressId?: object;
-	serverUrl?: object;
-	isLive: object;
-	isChatEnabled: object;
-	isChatDelayed: object;
-	allolwFollowersOnly: object;
+	host: string;
+	name: string;
+	thumbnail?: string;
+	ingressId?: string;
+	serverUrl?: string;
+	isLive: boolean;
+	isChatEnabled: boolean;
+	isChatDelayed: boolean;
+	allolwFollowersOnly: boolean;
 }
 
 const schema = new Schema(
