@@ -6,8 +6,10 @@ import getFollows from "@/db/controllers/get-user-follows.controller";
 import Follows, { FollowsSkeleton } from "./follows";
 
 export async function Sidebar() {
-	const recommendedUsers = await getRecommendedUsers();
-	const follows = await getFollows();
+	const [recommendedUsers, follows] = await Promise.all([
+		getRecommendedUsers(),
+		getFollows(),
+	]);
 
 	return (
 		<Wrapper>
