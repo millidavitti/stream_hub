@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { getAuthenticatedUser } from "@/db/helpers/getAuthenticatedUser";
+import { getAuthenticatedUser } from "@/db/helpers/get-authenticated-user";
 import { SignInButton, UserButton } from "@clerk/nextjs";
 import { Clapperboard } from "lucide-react";
 import Link from "next/link";
