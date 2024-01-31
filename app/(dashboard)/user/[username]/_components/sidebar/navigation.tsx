@@ -58,22 +58,22 @@ function useNavigationRoutes(username: string) {
 	return [
 		{
 			label: "Stream",
-			href: "/" + username,
+			href: "/user/" + username,
 			icon: Fullscreen,
 		},
 		{
 			label: "Keys",
-			href: "/" + username + "/keys",
+			href: "/user/" + username + "/keys",
 			icon: KeyRound,
 		},
 		{
 			label: "Chat",
-			href: "/" + username + "/chat",
+			href: "/user/" + username + "/chat",
 			icon: MessageSquare,
 		},
 		{
 			label: "Community",
-			href: "/" + username + "/community",
+			href: "/user/" + username + "/community",
 			icon: Users,
 		},
 	];

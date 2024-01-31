@@ -2,9 +2,9 @@ import { connectdb } from "../connect";
 import userModel from "../models/user.model";
 import { Document } from "mongoose";
 import { Error } from "mongoose";
-import { auth } from "@clerk/nextjs";
+import { auth, currentUser } from "@clerk/nextjs";
 
-export async function getCurrentUser(userName: string) {
+export async function getCurrentUser(userName?: string) {
 	const authenticatedUser = auth();
 
 	await connectdb("Get Current User");
@@ -13,11 +13,10 @@ export async function getCurrentUser(userName: string) {
 		const user: Document = await userModel
 			.findOne({
 				authId: authenticatedUser.userId,
-				userName,
+				userName: userName || (await currentUser())?.username,
 			})
 			.orFail(new Error("User not found!"));
 
-		console.log("LINE 20: ", user);
 		return user.toObject();
 	} catch (value) {
 		const error = value as Error.DocumentNotFoundError;
