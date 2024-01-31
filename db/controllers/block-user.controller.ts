@@ -1,18 +1,18 @@
 import { revalidatePath } from "next/cache";
 import { connectdb } from "../connect";
-import { getAuthenticatedUser } from "../helpers/get-authenticated-user";
 import blockModel, { Block } from "../models/block.model";
 import userModel from "../models/user.model";
+import { auth } from "@clerk/nextjs";
 
 export async function block(blockedUsername: string) {
-	const authenticatedUser = await getAuthenticatedUser();
+	const authenticatedUser = auth();
 
 	await connectdb("Block user: " + blockedUsername);
 
 	try {
 		// Find the user who is blocking by their authId
 		const blocker = await userModel
-			.findOne({ authId: authenticatedUser?.id })
+			.findOne({ authId: authenticatedUser.userId })
 			.orFail();
 
 		// Find the user who is being blocked by their username
