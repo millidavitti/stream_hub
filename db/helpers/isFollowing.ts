@@ -1,24 +1,20 @@
+import { currentUser } from "@clerk/nextjs";
 import followModel from "../models/follow.model";
-import { getAuthenticatedUser } from "./get-authenticated-user";
+import { connectdb } from "../connect";
 
 export async function isFollowing(followUsername: string) {
-	const authenticatedUser = await getAuthenticatedUser();
-
+	await connectdb("Follow " + followUsername);
 	try {
+		const user = await currentUser();
 		const data = await followModel.findOne(
 			{
 				followUsername,
-				userName: authenticatedUser?.username,
+				userName: user?.username,
 			},
 			{ followUsername: 1 },
 		);
 		return data;
-	} catch {
-		console.log(
-			"Failed to determine the follow status: " +
-				authenticatedUser?.username +
-				"=>" +
-				followUsername,
-		);
+	} catch (error) {
+		console.error(error);
 	}
 }
