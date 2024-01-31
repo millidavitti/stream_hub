@@ -19,10 +19,7 @@ export default async function HostLayout({ children, params }: HostLayout) {
 			<NavBar />
 			<div className='flex h-full pt-20'>
 				<Sidebar />
-				<Container>
-					Dashboard
-					{children}
-				</Container>
+				<Container>{children}</Container>
 			</div>
 		</>
 	);
