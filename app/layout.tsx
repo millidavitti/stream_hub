@@ -11,6 +11,10 @@ const SidebarProvider = dynamic(
 	() => import("@/state/functions/sidebar.state"),
 	{ ssr: false },
 );
+const HostSidebarProvider = dynamic(
+	() => import("@/state/functions/host-sidebar.state"),
+	{ ssr: false },
+);
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -37,10 +41,12 @@ export default function RootLayout({
 						forcedTheme='dark'
 						storageKey='stream-hub-theme'
 					>
-						<SidebarProvider>
-							<Toaster theme='light' position='bottom-center' />
-							{children}
-						</SidebarProvider>
+						<HostSidebarProvider>
+							<SidebarProvider>
+								<Toaster theme='light' position='bottom-center' />
+								{children}
+							</SidebarProvider>
+						</HostSidebarProvider>
 					</ThemeProvider>
 				</body>
 			</html>
