@@ -7,6 +7,7 @@ export interface Stream {
 	thumbnail?: string;
 	ingressId?: string;
 	serverUrl?: string;
+	streamKey?: string;
 	isLive: boolean;
 	isChatEnabled: boolean;
 	isChatDelayed: boolean;
@@ -24,9 +25,10 @@ const schema = new Schema(
 			type: String,
 			require: true,
 		},
-		thumbnail: String,
-		ingressId: String,
-		serverUrl: String,
+		thumbnail: { type: String, default: null },
+		ingressId: { type: String, default: null },
+		serverUrl: { type: String, default: null },
+		streamKey: { type: String, default: null },
 		isLive: {
 			type: Boolean,
 			default: false,
