@@ -17,8 +17,19 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import { IngressInput } from "livekit-server-sdk";
+import { useState, useTransition } from "react";
+import { createIngressAction } from "@/db/actions/ingress.action";
+import { toast } from "sonner";
 
+const RTMP = String(IngressInput.RTMP_INPUT);
+const WHIP = String(IngressInput.WHIP_INPUT);
+
+type IngressType = typeof RTMP | typeof WHIP;
 export default function ConnectModal() {
+	const [ingressType, setIngressType] = useState<IngressType>(RTMP);
+	const [pending, startTransition] = useTransition();
+
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
@@ -28,13 +39,16 @@ export default function ConnectModal() {
 				<DialogHeader>
 					<DialogTitle>Generate Connection</DialogTitle>
 				</DialogHeader>
-				<Select>
+				<Select
+					value={ingressType}
+					onValueChange={(value) => setIngressType(value)}
+				>
 					<SelectTrigger className='w-full'>
 						<SelectValue placeholder='Ingress Type' />
 					</SelectTrigger>
 					<SelectContent>
-						<SelectItem value='RTMP'>RTMP</SelectItem>
-						<SelectItem value='WHIP'>WHIP</SelectItem>
+						<SelectItem value={RTMP}>RTMP</SelectItem>
+						<SelectItem value={WHIP}>WHIP</SelectItem>
 					</SelectContent>
 				</Select>
 				<Alert>
@@ -48,7 +62,23 @@ export default function ConnectModal() {
 					<DialogClose asChild>
 						<Button variant='ghost'>Cancel</Button>
 					</DialogClose>
-					<Button onClick={() => {}} variant='primary'>
+					<Button
+						disabled={pending}
+						className='active:scale-95 transition'
+						variant='primary'
+						onClick={() => {
+							startTransition(async () => {
+								const data = await createIngressAction(+ingressType);
+								data
+									? toast.success(
+											"Your server URL and stream key has been successfully generated!",
+									  )
+									: toast.error(
+											"Your server URL and stream key generation failed!",
+									  );
+							});
+						}}
+					>
 						Generate
 					</Button>
 				</div>
